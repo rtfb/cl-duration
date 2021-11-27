@@ -3,5 +3,5 @@
   (:export duration
            make-duration
            durslot
-           print-duration
-           print-durslot))
+           duration->string
+           durslot->string))

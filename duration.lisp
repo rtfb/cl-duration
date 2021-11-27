@@ -8,7 +8,7 @@
     :initarg :units
     :initform "s")))
 
-(defun print-durslot (s)
+(defun durslot->string (s)
   (with-slots (value units) s
     (when (not (null value))
       (format nil "~d~a" value units))))
@@ -22,15 +22,15 @@
                  :minutes (make-instance 'durslot :value minutes :units "m")
                  :seconds (make-instance 'durslot :value seconds :units "s")))
 
-(defun print-duration (d)
+(defun duration->string (d)
   (format nil "~{~@[~a~]~}"
           (mapcar #'(lambda (slot)
                       (when slot
-                        (print-durslot slot)))
+                        (durslot->string slot)))
                   (list
                     (slot-value d 'minutes)
                     (slot-value d 'seconds)))))
 
 (defmethod print-object ((obj duration) stream)
   (print-unreadable-object (obj stream :type t)
-    (format stream "~a" (print-duration obj))))
+    (format stream "~a" (duration->string obj))))
