@@ -15,5 +15,4 @@
   (is (null (print-durslot (make-instance 'durslot)))))
 
 (test duration-simple-print
-  (is (string= "1m" (print-duration (make-instance 'duration
-                                                   :minutes 1)))))
+  (is (string= "1m" (print-duration (make-duration :minutes 1)))))
