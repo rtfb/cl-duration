@@ -24,6 +24,11 @@
                                                  :minutes 53
                                                  :seconds 27)))))
 
+(test duration-weeks
+  (is (string= "1w32m" (duration->string (make-duration
+                                           :weeks 1
+                                           :minutes 32)))))
+
 (test duration-prettyprint
   (is (string= "#<DURATION 3m5s>"
                (format nil "~a" (make-duration :minutes 3 :seconds 5)))))

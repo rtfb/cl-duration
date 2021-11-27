@@ -54,7 +54,8 @@
                        ,(all-slots slots))))))
 
 (define-duration-class
-  ((days "d")
+  ((weeks "w")
+   (days "d")
    (hours "h")
    (minutes "m")
    (seconds "s")))
