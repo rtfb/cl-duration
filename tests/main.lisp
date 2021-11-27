@@ -17,6 +17,13 @@
 (test duration-simple-print
   (is (string= "1m" (duration->string (make-duration :minutes 1)))))
 
+(test duration-days
+  (is (string= "3d20h53m27s" (duration->string (make-duration
+                                                 :days 3
+                                                 :hours 20
+                                                 :minutes 53
+                                                 :seconds 27)))))
+
 (test duration-prettyprint
   (is (string= "#<DURATION 3m5s>"
                (format nil "~a" (make-duration :minutes 3 :seconds 5)))))

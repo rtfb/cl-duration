@@ -14,11 +14,15 @@
       (format nil "~d~a" value units))))
 
 (defclass duration ()
-  ((minutes :initarg :minutes)
+  ((days :initarg :days)
+   (hours :initarg :hours)
+   (minutes :initarg :minutes)
    (seconds :initarg :seconds)))
 
-(defun make-duration (&key minutes seconds)
+(defun make-duration (&key days hours minutes seconds)
   (make-instance 'duration
+                 :days (make-instance 'durslot :value days :units "d")
+                 :hours (make-instance 'durslot :value hours :units "h")
                  :minutes (make-instance 'durslot :value minutes :units "m")
                  :seconds (make-instance 'durslot :value seconds :units "s")))
 
@@ -28,6 +32,8 @@
                       (when slot
                         (durslot->string slot)))
                   (list
+                    (slot-value d 'days)
+                    (slot-value d 'hours)
                     (slot-value d 'minutes)
                     (slot-value d 'seconds)))))
 
