@@ -16,3 +16,7 @@
 
 (test duration-simple-print
   (is (string= "1m" (print-duration (make-duration :minutes 1)))))
+
+(test duration-prettyprint
+  (is (string= "#<DURATION 3m5s>"
+               (format nil "~a" (make-duration :minutes 3 :seconds 5)))))

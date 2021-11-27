@@ -30,3 +30,7 @@
                   (list
                     (slot-value d 'minutes)
                     (slot-value d 'seconds)))))
+
+(defmethod print-object ((obj duration) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a" (print-duration obj))))
