@@ -13,18 +13,40 @@
     (when (not (null value))
       (format nil "~d~a" value units))))
 
-(defclass duration ()
-  ((days :initarg :days)
-   (hours :initarg :hours)
-   (minutes :initarg :minutes)
-   (seconds :initarg :seconds)))
+(defmacro defun-macro-helper (name (args) body)
+  `(eval-when (:compile-toplevel :load-toplevel :execute)
+     (defun ,name (,args)
+       ,body)))
 
-(defun make-duration (&key days hours minutes seconds)
-  (make-instance 'duration
-                 :days (make-instance 'durslot :value days :units "d")
-                 :hours (make-instance 'durslot :value hours :units "h")
-                 :minutes (make-instance 'durslot :value minutes :units "m")
-                 :seconds (make-instance 'durslot :value seconds :units "s")))
+(defun-macro-helper as-keyword (sym)
+  (intern (string sym) :keyword))
+
+(defun-macro-helper slot->defclass-slot (spec)
+  (let ((name (first spec)))
+    `(,name :initarg ,(as-keyword name) :accessor ,name)))
+
+(defun-macro-helper slot->constructor (spec)
+  (let ((name (first spec)))
+    `(make-instance 'durslot :value ,name :units ,(second spec))))
+
+(defun-macro-helper slots->constructors (slots)
+  (loop for name in (mapcar #'as-keyword (mapcar #'first slots))
+        for maker in (mapcar #'slot->constructor slots)
+        append (list name maker)))
+
+(defmacro define-duration-class (slots)
+  `(progn
+     (defclass duration ()
+       ,(mapcar #'slot->defclass-slot slots))
+     (defun make-duration (&key ,@(mapcar #'first slots))
+       (make-instance 'duration
+                      ,@(slots->constructors slots)))))
+
+(define-duration-class
+  ((days "d")
+   (hours "h")
+   (minutes "m")
+   (seconds "s")))
 
 (defun duration->string (d)
   (format nil "~{~@[~a~]~}"
