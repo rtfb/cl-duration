@@ -1,4 +1,4 @@
-(in-package #:durparser)
+(in-package #:duration)
 
 (defclass durslot ()
   ((value

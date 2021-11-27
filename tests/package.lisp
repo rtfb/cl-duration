@@ -1,7 +1,7 @@
 (ql:quickload :fiveam)
-(ql:quickload :durparser)
-(defpackage #:durparser-tests
-  (:use #:cl #:fiveam #:durparser)
+(ql:quickload :duration)
+(defpackage #:duration-tests
+  (:use #:cl #:fiveam #:duration)
   (:export #:run!
            #:all-tests
-           #:test-durparser))
+           #:test-duration))

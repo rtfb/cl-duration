@@ -1,4 +1,4 @@
-(defpackage #:durparser
+(defpackage #:duration
   (:use #:cl)
   (:export duration
            make-duration

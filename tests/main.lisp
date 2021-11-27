@@ -1,11 +1,11 @@
-(in-package #:durparser-tests)
+(in-package #:duration-tests)
 
 (def-suite all-tests
-    :description "The master suite of all durparser tests.")
+    :description "The master suite of all duration tests.")
 
 (in-suite all-tests)
 
-(defun test-durparser ()
+(defun test-duration ()
   (run! 'all-tests))
 
 (test print-durslot
