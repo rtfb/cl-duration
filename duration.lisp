@@ -13,9 +13,9 @@
     (when (not (null value))
       (format nil "~d~a" value units))))
 
-(defmacro defun-macro-helper (name (args) body)
+(defmacro defun-macro-helper (name (&rest args) body)
   `(eval-when (:compile-toplevel :load-toplevel :execute)
-     (defun ,name (,args)
+     (defun ,name (,@args)
        ,body)))
 
 (defun-macro-helper as-keyword (sym)
@@ -34,30 +34,30 @@
         for maker in (mapcar #'slot->constructor slots)
         append (list name maker)))
 
+(defun-macro-helper all-slots (slots)
+  `(list ,@(mapcar #'(lambda (spec)
+               (list (first spec) 'd))
+           slots)))
+
 (defmacro define-duration-class (slots)
   `(progn
      (defclass duration ()
        ,(mapcar #'slot->defclass-slot slots))
      (defun make-duration (&key ,@(mapcar #'first slots))
        (make-instance 'duration
-                      ,@(slots->constructors slots)))))
+                      ,@(slots->constructors slots)))
+     (defun duration->string (d)
+       (format nil "~{~@[~a~]~}"
+               (mapcar #'(lambda (slot)
+                           (when slot
+                             (durslot->string slot)))
+                       ,(all-slots slots))))))
 
 (define-duration-class
   ((days "d")
    (hours "h")
    (minutes "m")
    (seconds "s")))
-
-(defun duration->string (d)
-  (format nil "~{~@[~a~]~}"
-          (mapcar #'(lambda (slot)
-                      (when slot
-                        (durslot->string slot)))
-                  (list
-                    (slot-value d 'days)
-                    (slot-value d 'hours)
-                    (slot-value d 'minutes)
-                    (slot-value d 'seconds)))))
 
 (defmethod print-object ((obj duration) stream)
   (print-unreadable-object (obj stream :type t)
