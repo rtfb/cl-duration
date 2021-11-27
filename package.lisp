@@ -1,3 +1,4 @@
 (defpackage #:durparser
   (:use #:cl)
-  (:export ))
+  (:export duration
+           print-duration))

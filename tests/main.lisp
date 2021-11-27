@@ -8,5 +8,6 @@
 (defun test-durparser ()
   (run! 'all-tests))
 
-(test foo-returns-seven
-  (is (= 7 (durparser::foo))))
+(test duration-simple-print
+  (is (string= "1m" (print-duration (make-instance 'duration
+                                                   :minutes 1)))))
