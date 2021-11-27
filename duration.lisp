@@ -63,3 +63,10 @@
 (defmethod print-object ((obj duration) stream)
   (print-unreadable-object (obj stream :type t)
     (format stream "~a" (duration->string obj))))
+
+(defun dm ()
+  (macroexpand-1 '(define-duration-class
+                    ((days "d")
+                     (hours "h")
+                     (minutes "m")
+                     (seconds "s")))))
