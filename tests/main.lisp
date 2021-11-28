@@ -29,6 +29,13 @@
                                            :weeks 1
                                            :minutes 32)))))
 
+(test sub-second
+  (is (string= "2s300ms50μs20ns" (duration->string (make-duration
+                                                     :seconds 2
+                                                     :millis 300
+                                                     :micros 50
+                                                     :nanos 20)))))
+
 (test duration-prettyprint
   (is (string= "#<DURATION 3m5s>"
                (format nil "~a" (make-duration :minutes 3 :seconds 5)))))

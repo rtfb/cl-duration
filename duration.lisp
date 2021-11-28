@@ -58,7 +58,10 @@
    (days "d")
    (hours "h")
    (minutes "m")
-   (seconds "s")))
+   (seconds "s")
+   (millis "ms")
+   (micros "μs")
+   (nanos "ns")))
 
 (defmethod print-object ((obj duration) stream)
   (print-unreadable-object (obj stream :type t)
