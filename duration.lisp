@@ -1,5 +1,8 @@
 (in-package #:duration)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defparameter *suffix-to-setter* (make-hash-table)))
+
 (defclass durslot ()
   ((value
     :initarg :value
@@ -43,9 +46,11 @@
 (defun-macro-helper slot-accessors (slots)
   (loop for slot in slots
         for slotname = (first slot)
+        for suffix = (second slot)
         for func-name = (concatenate 'string "set-" (symbol-name slotname))
         collect `(defun ,(intern (string-upcase func-name)) (dur new-value)
-                   (setf (value (,slotname dur)) new-value))))
+                   (setf (value (,slotname dur)) new-value))
+        do (setf (gethash suffix *suffix-to-setter*) func-name)))
 
 (defmacro define-duration-class (slots)
   `(progn
@@ -61,6 +66,8 @@
                              (durslot->string slot)))
                        ,(all-slots slots))))
      ,@(slot-accessors slots)
+     (defun setter-by-suffix (suffix)
+       (gethash suffix *suffix-to-setter*))
      ))
 
 (define-duration-class
@@ -105,29 +112,29 @@
           while (< index (length input))
           )))
 
-(defun accessor-by-suffix (suffix)
-  (cond
-    ((string= suffix "w")
-     'set-weeks)
-    ((string= suffix "d")
-     'set-days)
-    ((string= suffix "h")
-     'set-hours)
-    ((string= suffix "m")
-     'set-minutes)
-    ((string= suffix "s")
-     'set-seconds)
-    ((string= suffix "ms")
-     'set-millis)
-    ((string= suffix "μs")
-     'set-micros)
-    ((string= suffix "ns")
-     'set-nanos)))
+; (defun accessor-by-suffix (suffix)
+;   (cond
+;     ((string= suffix "w")
+;      'set-weeks)
+;     ((string= suffix "d")
+;      'set-days)
+;     ((string= suffix "h")
+;      'set-hours)
+;     ((string= suffix "m")
+;      'set-minutes)
+;     ((string= suffix "s")
+;      'set-seconds)
+;     ((string= suffix "ms")
+;      'set-millis)
+;     ((string= suffix "μs")
+;      'set-micros)
+;     ((string= suffix "ns")
+;      'set-nanos)))
 
 (defun apply-duration-part (duration partspec)
   (let ((num (first partspec))
         (suffix (second partspec)))
-    (funcall (accessor-by-suffix suffix) duration num)))
+    (funcall (setter-by-suffix suffix) duration num)))
 
 (defun parse (input)
   (let ((dur (make-duration)))
